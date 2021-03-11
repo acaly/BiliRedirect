@@ -17,4 +17,8 @@
     <PackageReference Include="BitFaster.Caching" Version="1.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
 </Project>
