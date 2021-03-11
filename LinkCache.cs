@@ -33,15 +33,15 @@ namespace BiliRedirect
 
         private class BilibiliVideoDataInfo
         {
-            public List<BilibiliVideoPageInfo> Pages { get; } = new();
+            public List<BilibiliVideoPageInfo> Pages { get; init; } = new();
         }
 
         private class BilibiliVideoInfo
         {
-            public BilibiliVideoDataInfo Data { get; } = new();
+            public BilibiliVideoDataInfo Data { get; init; } = new();
         }
 
-        private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = false };
+        private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
         private const string _bvInfoApi = "https://api.bilibili.com/x/web-interface/view?bvid=";
         private const string _outputUrl = "https://www.bilibili.com/video/";
