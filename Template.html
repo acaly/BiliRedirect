@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <p>正在重定向到 《{{Title}}》...</p>
+    <p><a id="about-link">为什么需要重定向？</a></p>
+    <script>
+        var aboutUrl = "{{AboutUrl}}";
+        if (aboutUrl == "") {
+            document.getElementById('about-link').style.display = 'none';
+        } else {
+            document.getElementById('about-link').href = aboutUrl;
+        }
+        setTimeout(function () {
+            window.location.href = "{{TargetUrl}}";
+        });
+    </script>
+</body>
+</html>

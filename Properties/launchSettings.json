@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BiliRedirect": {
+      "commandName": "Project",
+      "commandLineArgs": "about_url=\"abcd\""
+    }
+  }
+}
