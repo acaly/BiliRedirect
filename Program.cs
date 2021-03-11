@@ -14,6 +14,8 @@ namespace BiliRedirect
             { "threads", val => _server.Threads = int.Parse(val) },
             { "prefix", val => _server.Prefix = val },
             { "about_url", val => _server.AboutUrl = val },
+            { "cache_capacity", val => _server.CacheCapacity = int.Parse(val) },
+            { "cache_lifetime", val => _server.CacheLifetime = int.Parse(val) },
         };
 
         private static void HandleArgs(string[] args)
@@ -38,11 +40,11 @@ namespace BiliRedirect
             }
         }
 
-        private static Server _server = new();
+        private static readonly Server _server = new();
 
         static void Main(string[] args)
         {
-            Console.WriteLine("BiliRedirect x");
+            Console.WriteLine("BiliRedirect");
             HandleArgs(args);
             _server.Start();
         }
