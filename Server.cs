@@ -22,6 +22,7 @@ namespace BiliRedirect
         public int CacheCapacity { get; set; } = 10000;
         public int CacheLifetime { get; set; } = 3600;
         public string AboutUrl { get; set; } = null;
+        private HttpListener _listener;
 
         public Server()
         {
@@ -55,14 +56,29 @@ namespace BiliRedirect
             _cache = new(CacheCapacity, CacheLifetime);
             _aboutUrlData = AboutUrl is null ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(AboutUrl);
 
+            Console.WriteLine($"Listener Starting.");
+            _listener = new HttpListener();
+
+            _listener.Prefixes.Add(Prefix);
+            try
+            {
+                _listener.Start();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Cannot listen on {Prefix}.\n{e}");
+                return;
+            }
+
             Task[] workers = new Task[Threads];
             for (int i = 0; i < Threads; ++i)
             {
                 workers[i] = WorkerThread(i);
             }
             Task.WaitAll(workers);
-
             Console.WriteLine("All worker threads exited.");
+
+            _listener.Stop();
         }
 
         private async Task WrappedWorkerThread(int threadID)
@@ -83,30 +99,17 @@ namespace BiliRedirect
 
         private async Task WorkerThread(int threadID)
         {
-            Console.WriteLine($"[{threadID:00}] Starting.");
-            var listener = new HttpListener();
             var templateParameters = new Dictionary<string, ReadOnlyMemory<byte>>();
             var requestRegex = new Regex(@"^/\?bvid=(BV[a-zA-Z0-9]+)&cid=(\d+)$");
 
-            listener.Prefixes.Add(Prefix);
-            try
-            {
-                listener.Start();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"[{threadID:00}] Cannot listen on {Prefix}.\n{e}");
-                return;
-            }
-
             Console.WriteLine($"[{threadID:00}] Started.");
-            while (listener.IsListening)
+            while (_listener.IsListening)
             {
-                var context = await listener.GetContextAsync();
+                var context = await _listener.GetContextAsync();
                 try
                 {
                     var url = context.Request.RawUrl;
-                    Console.WriteLine(url);
+                    Console.WriteLine($"[{threadID:00}] {url}");
 
                     if (url.StartsWith("/?bvid="))
                     {
